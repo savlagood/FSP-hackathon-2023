@@ -1,0 +1,93 @@
+{% extends 'fspru/wrapper.html' %}
+{% load static %}
+
+{% block title %}мои соревнования{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-expand-lg navbar-dark header-bar">
+  <div class="container-fluid">
+    <a class="navbar-brand header_logo" href="{% url 'fspru:index' %}">
+    	<img src="{% static 'fspru/img/header_logo.png' %}" class=header_logo_img>
+    </a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" aria-current="page" href="{% url 'fspru:index' %}">Главная</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'fspru:contests' %}">Соревнования</a>
+        </li>
+        <!-- <li class="nav-item"> -->
+          <!-- <a class="nav-link" href="{% url 'fspru:login_index' %}">Личный кабинет</a> -->
+        <!-- </li> -->
+      {% if request.session.is_auth %}
+      </ul>
+      <div class="flex-shrink-0 dropdown">
+	  <a href="#" class="d-block link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false" style="color: #ededed;">
+	  	<div class="user-logo">
+	  		<span>{{ request.session.user.first_letter }}</span>
+	  	</div>
+	    <!-- <img src="https://github.com/mdo.png" alt="mdo" width="32" height="32" class="rounded-circle"> -->
+	  </a>
+	  <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2" style="margin-left: -110px;">
+	  	<li><span class="dropdown-item">{{ request.session.user.name }}</span></li>
+	    <li><a class="dropdown-item" href="{% url 'fspru:user_contests' %}">Мои соревнования</a></li>
+	    <li><hr class="dropdown-divider"></li>
+	    <li><a class="dropdown-item" href="{% url 'fspru:logout' %}">Выйти</a></li>
+	  </ul>
+	</div>
+	{% else %}
+	<li class="nav-item"><a class="nav-link" href="{% url 'fspru:login_index' %}">Личный кабинет</a></li>
+	</ul>
+	{% endif %}
+    </div>
+  </div>
+</nav>
+
+<section class="header-russia">
+	<div class="container-main">
+		<h1 class="main-title">Федерация <br> спортивного <br> программирования</h1>
+	</div>
+</section>
+<section class="contests-section container">
+	<div class="container">
+		<div class="section-head">
+			<ul class="list-unstyled row">
+				<li class="col-md"><h4>[Мои соревнования]</h4></li>
+				<!-- <a href="{% url 'fspru:contests' %}" class="col-md" style="text-align: right;"><Все события></a> -->
+			</ul>
+		</div>
+	</div>
+</section>
+
+
+<section class="upcoming_contests container">
+	<div class="row">
+		{% if contests %}
+		{% for contest in contests %}
+		<div class="col-md-6 col-sm-12">
+			<div class="card mb-3" style="max-width: 700px;">
+				<div class="row no-gutters">
+			    	<div class="col-md-4">
+			    		<img src="{{ contest.photo.url }}" class="card-img contest-img">
+			    	</div>
+			    	<div class="col-md-8">
+			      		<div class="card-body">
+			       			<a href="{% url 'fspru:contest_description' contest.id %}"><h5 class="card-title">{{ contest.header }}</h5></a>
+			        		<p class="card-text">{{ contest.short_description }}</p>
+			        		<p class="card-text"><small class="text-muted">26.04.2023 - 29.04.2023 {{ contest.location }}</small></p>
+			      		</div>
+			    	</div>
+		  		</div>
+			</div>
+		</div>
+		{% endfor %}
+		{% else %}
+		<p>Похоже вы еще ни где не участвовали</p>
+		{% endif %}
+	</div>
+</section>
+{% endblock %}
